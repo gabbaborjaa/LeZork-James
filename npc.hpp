@@ -39,6 +39,12 @@ class NPC {
             }
             std::string currentMessage = messages[messageNumber];
             messageNumber = (messageNumber + 1) % messages.size();
+            return currentMessage;
+        }
+
+        friend std::ostream& operator<<(std::ostream& os, const NPC& npc){
+            os << npc.name;
+            return os;
         }
     private:
         std::string name;

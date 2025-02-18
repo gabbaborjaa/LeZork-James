@@ -1,0 +1,5 @@
+# Ignore .gch files
+*.gch
+
+# Ignore a.out files
+a.out

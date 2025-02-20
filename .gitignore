@@ -3,3 +3,6 @@
 
 # Ignore a.out files
 a.out
+
+# Ignore object files
+*.o

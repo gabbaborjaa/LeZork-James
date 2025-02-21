@@ -12,11 +12,26 @@
 class Game {
     public:
         Game() {
-            // set commands map equal to the return call from setup_commands function
-            // call create_world() method
-            // set default values for all other variables
-            // set current location to random location from random_location() method
+            // I don't think we initialize items or locations here.
+            // I think we initialize them in create_world
+            this->commands = setup_commands();
+            create_world();
+            this->weight = 0;
+            this->calories_needed = 500;
+            this->game_in_progress = true;
+            this->curr_location = random_location();
         }
+
+    private:
+        std::map<std::string, void(*)(std::vector<std::string>)> commands;
+        std::vector<Item> items;
+        int weight;
+        std::vector<Location> locations;
+        Location curr_location;
+        int calories_needed;
+        bool game_in_progress;
+
+
 
     void create_world();
 

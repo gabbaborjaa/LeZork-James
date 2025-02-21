@@ -24,7 +24,7 @@ class Location{
         Location(){
             this->name = "";
             this->description = "";
-       }
+        }
         Location(std::string name, std::string description){
             this->name = name;
             this->description = description;
@@ -32,24 +32,24 @@ class Location{
 
 
         friend std::ostream& operator<<(std::ostream& os, const Location& obj){
-        os << obj.name <<"\n\t" << obj.description;
-        return os;
+            os << obj.name <<"\n\t" << obj.description;
+            return os;
         }
-       // void add_location(std::string direction, std::reference_wrapper<Location> location) {
+        // void add_location(std::string direction, std::reference_wrapper<Location> location) {
         void add_location(std::string direction,Location& location) {
             //used chatgpt for exception handling
-        if (direction.empty()) {
-            throw std::invalid_argument("Direction cannot be blank.");
+            if (direction.empty()) {
+                throw std::invalid_argument("Direction cannot be blank.");
+            }
+            if (neighbors.find(direction) != neighbors.end()) {
+                throw std::invalid_argument("Key already exists in the map.");
+            }
+            //this->neighbors.insert(std::pair<std::string, std::reference_wrapper<Location>>(direction, std::ref(location)));
+               //used CHATGPT
+                this->neighbors.emplace(std::piecewise_construct,
+                    std::forward_as_tuple(direction),
+                    std::forward_as_tuple(std::ref(location)));
         }
-        if (neighbors.find(direction) != neighbors.end()) {
-            throw std::invalid_argument("Key already exists in the map.");
-        }
-//        this->neighbors.insert(std::pair<std::string, std::reference_wrapper<Location>>(direction, std::ref(location)));
-           //used CHATGPT    
-            this->neighbors.emplace(std::piecewise_construct,
-                       std::forward_as_tuple(direction),
-                       std::forward_as_tuple(std::ref(location))); 
-    }
         const std::map<std::string, std::reference_wrapper<Location>>& get_locations() const {
         return this->neighbors; 
         }

@@ -23,7 +23,7 @@ class Game {
         }
 
     private:
-        std::map<std::string, void(*)(std::vector<std::string>)> commands;
+        std::map<std::string, void(Game::*)(std::vector<std::string>)> commands;
         std::vector<Item> items;
         int weight;
         std::vector<Location> locations;
@@ -31,17 +31,59 @@ class Game {
         int calories_needed;
         bool game_in_progress;
 
+    void create_world() {
+        // Create all locations, items, and npcs
+        // Add all items and npcs to the rooms in which they belong.
+        // Add each location to the neighbors which it needs to connect.
+
+        std::vector<std::string> lebronMessages = {
+            "I am the King!",
+            "I got that ring.",
+            "Where is Bronny?",
+            "I will be taking talents to south beach."
+        };
+
+        Item basketball("Basketball", "Lebron's favorite ball", 40, 2.f);
+        Item proteinShake("Protein Shake", "A delicious chocolate bar", 250, 0.2f);
+        Item championshipRing("Championship Ring", "A shimmering ring symbolizing one of LeBron's NBA titles. It glows with a legendary aura.", 0, 0.1);
+        Item sneakers("Nike LeBron Sneakers", "A pair of iconic Nike LeBron 20s. Wearing them might help you move faster on and off the court.", 0, 0.5f);
 
 
-    void create_world();
+        NPC lebron("LeBron James", "A legendary basketball player", lebronMessages);
+        Location court("Basketball Court", "Generic Description");
+        Location lockers("Locker Room", "Generic Description2");
 
-    std::map<std::string, void(*)(std::vector<std::string>)> setup_commands();
+        court.add_npc(lebron);
+        court.add_item(basketball);
+        court.add_location("North", lockers);
+
+
+        locations.push_back(court);
+        locations.push_back(lockers);
+    }
+
+    std::map<std::string, void(Game::*)(std::vector<std::string>)> setup_commands() {
+        std::map<std::string, void(Game::*)(std::vector<std::string>)> commands;
+        commands["quit"] = quit;
+        commands["q"] = quit;
+        commands["help"] = show_help;
+        return commands;
+    }
 
     Location random_location();
 
-    void play();
+    void play() {
+        while (game_in_progress) {
+            std::cout << "Enter a command: ";
+            std::string command;
+            std::cin >> command;
 
-    void show_help();
+        }
+    }
+
+    void show_help(std::vector<std::string> target) {
+        std::cout << "Available Commands:" << std::endl;
+    }
 
     void talk(std::vector<std::string> target);
 
@@ -57,7 +99,10 @@ class Game {
 
     void look(std::vector<std::string> target);
 
-    void quit(std::vector<std::string> target);
+    void quit(std::vector<std::string> target) {
+        std::cout << "Game Quit" << std::endl;
+        this->game_in_progress = false;
+    }
 
     // Add two additional commands here
 

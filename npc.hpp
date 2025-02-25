@@ -1,5 +1,5 @@
-#ifndef __npc_hpp_
-#define __npc_hpp_
+#ifndef NPC_HPP
+#define NPC_HPP
 
 #include <string>
 #include <vector>

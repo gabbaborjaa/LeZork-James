@@ -38,11 +38,12 @@ class Game {
 
         std::vector<std::string> lebronMessages = {
             "I am the King!",
-            "I got that ring.",
-            "Where is Bronny?",
-            "I will be taking talents to south beach."
+            "Always nice to meet a fan!",
+            "Have you seen Bronny?",
+            "I'm NEVER retiring!"
         };
 
+        // AI generated items and NPC's
         Item basketball("Basketball", "Lebron's favorite ball", 40, 2.f);
         Item proteinShake("Protein Shake", "A delicious chocolate bar", 250, 0.2f);
         Item championshipRing("Championship Ring", "A shimmering ring symbolizing one of LeBron's NBA titles. It glows with a legendary aura.", 0, 0.1);
@@ -64,9 +65,12 @@ class Game {
 
     std::map<std::string, void(Game::*)(std::vector<std::string>)> setup_commands() {
         std::map<std::string, void(Game::*)(std::vector<std::string>)> commands;
-        commands["quit"] = quit;
-        commands["q"] = quit;
-        commands["help"] = show_help;
+        commands["quit"] = &Game::quit;
+        commands["q"] = &Game::quit;
+        commands["help"] = &Game::show_help;
+        commands["talk to"] = &Game::talk;
+        commands["speak to"] = &Game::talk;
+        commands["interact with"] = &Game::talk;
         return commands;
     }
 

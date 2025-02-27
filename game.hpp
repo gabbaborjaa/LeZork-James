@@ -68,9 +68,9 @@ class Game {
         commands["quit"] = &Game::quit;
         commands["q"] = &Game::quit;
         commands["help"] = &Game::show_help;
-        commands["talk to"] = &Game::talk;
-        commands["speak to"] = &Game::talk;
-        commands["interact with"] = &Game::talk;
+        commands["talk to"] = &Game::meet;
+        commands["speak to"] = &Game::meet;
+        commands["interact with"] = &Game::meet;
         return commands;
     }
 
@@ -89,8 +89,7 @@ class Game {
         std::cout << "Available Commands:" << std::endl;
     }
 
-    void talk(std::vector<std::string> target);
-
+    // Speaks to NPC
     void meet(std::vector<std::string> target);
 
     void take(std::vector<std::string> target);

@@ -10,17 +10,6 @@
 #include "npc.hpp"
 
 class Game {
-    public:
-        Game() {
-            // I don't think we initialize items or locations here.
-            // I think we initialize them in create_world
-            this->commands = setup_commands();
-            create_world();
-            this->weight = 0;
-            this->calories_needed = 500;
-            this->game_in_progress = true;
-            this->curr_location = random_location();
-        }
 
     private:
         std::map<std::string, void(Game::*)(std::vector<std::string>)> commands;
@@ -30,6 +19,20 @@ class Game {
         Location curr_location;
         int calories_needed;
         bool game_in_progress;
+
+    public:
+        Game() {
+            // I don't think we initialize items or locations here.
+            // I think we initialize them in create_world
+            //this->commands = setup_commands();
+            create_world();
+            this->weight = 0;
+            this->calories_needed = 500;
+            this->game_in_progress = true;
+            this->curr_location = random_location();
+        }
+
+    
 
     void create_world() {
         // Create all locations, items, and npcs
@@ -56,13 +59,15 @@ class Game {
 
         court.add_npc(lebron);
         court.add_item(basketball);
-        court.add_location("North", lockers);
+        //court.add_location("North", lockers);
 
 
         locations.push_back(court);
         locations.push_back(lockers);
+        locations[0].add_location("North", locations[1]);
+        locations[1].add_location("North", locations[0]);
     }
-
+/*
     std::map<std::string, void(Game::*)(std::vector<std::string>)> setup_commands() {
         std::map<std::string, void(Game::*)(std::vector<std::string>)> commands;
         commands["quit"] = &Game::quit;
@@ -72,9 +77,13 @@ class Game {
         commands["speak to"] = &Game::meet;
         commands["interact with"] = &Game::meet;
         return commands;
-    }
+    }*/
 
-    Location random_location();
+    Location random_location(){
+        this->locations[0].set_visited();
+        return this->locations[0];
+
+    }
 
     void play() {
         while (game_in_progress) {
@@ -96,11 +105,26 @@ class Game {
 
     void give(std::vector<std::string> target);
 
-    void go(std::vector<std::string> target);
+    void go(std::vector<std::string> target){
+       // std::map<std::string, std::reference_wrapper<Location>> neighbors = curr_location.get_locations();
+        //this->curr_location = neighbors[target[0]].get();
+        //this->curr_location.set_visited();
+    }
 
     void show_items(std::vector<std::string> target);
 
-    void look(std::vector<std::string> target);
+    void look(std::vector<std::string> target){
+        std::cout << this->curr_location << std::endl;
+        
+        std::vector<Item> items = this->curr_location.get_items();
+        std::vector<NPC> NPCs = this->curr_location.get_NPCs();
+        for(auto it = items.begin(); it != items.end(); ++it){
+            std::cout << *it << std::endl;
+        }
+        for(auto it = NPCs.begin(); it != NPCs.end(); ++it){
+            std::cout << *it << std::endl;
+        }
+    }
 
     void quit(std::vector<std::string> target) {
         std::cout << "Game Quit" << std::endl;

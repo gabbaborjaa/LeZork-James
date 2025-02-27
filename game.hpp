@@ -109,6 +109,11 @@ class Game {
     void go(std::vector<std::string> target);
 
     void show_items(std::vector<std::string> target);
+        std::cout << "Your items" << std::endl;
+        for (auto it = items.begin(); it != items.end(); ++it) {
+            std::cout << *it << std::endl;
+        }
+        std::cout << "Your weight: " << weight << " lbs" << std::endl;
 
     void look(std::vector<std::string> target){
         std::cout << this->curr_location << std::endl;

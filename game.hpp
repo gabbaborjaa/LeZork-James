@@ -110,7 +110,18 @@ class Game {
 
     void show_items(std::vector<std::string> target);
 
-    void look(std::vector<std::string> target);
+    void look(std::vector<std::string> target){
+        std::cout << this->curr_location << std::endl;
+        
+        std::vector<Item> items = this->curr_location.get_items();
+        std::vector<NPC> NPCs = this->curr_location.get_NPCs();
+        for(auto it = items.begin(); it != items.end(); ++it){
+            std::cout << *it << std::endl;
+        }
+        for(auto it = NPCs.begin(); it != NPCs.end(); ++it){
+            std::cout << *it << std::endl;
+        }
+    }
 
     void quit(std::vector<std::string> target) {
         std::cout << "Game Quit" << std::endl;

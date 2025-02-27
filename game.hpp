@@ -5,11 +5,21 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <random>
 #include "Location.hpp"
 #include "item.hpp"
 #include "npc.hpp"
 
 class Game {
+    private:
+        std::map<std::string, void(Game::*)(std::vector<std::string>)> commands;
+        std::vector<Item> items;
+        int weight;
+        std::vector<Location> locations;
+        Location curr_location;
+        int calories_needed;
+        bool game_in_progress;
+
     public:
         Game() {
             // I don't think we initialize items or locations here.
@@ -22,15 +32,7 @@ class Game {
             this->curr_location = random_location();
         }
 
-    private:
-        std::map<std::string, void(Game::*)(std::vector<std::string>)> commands;
-        std::vector<Item> items;
-        int weight;
-        std::vector<Location> locations;
-        Location curr_location;
-        int calories_needed;
-        bool game_in_progress;
-
+    
     void create_world() {
         // Create all locations, items, and npcs
         // Add all items and npcs to the rooms in which they belong.
@@ -74,7 +76,15 @@ class Game {
         return commands;
     }
 
-    Location random_location();
+    Location random_location(){
+        if (locations.empty()) {
+            throw std::runtime_error("No locations available");
+        }
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(0, locations.size() - 1);
+        return locations[dis(gen)];
+    }
 
     void play() {
         while (game_in_progress) {

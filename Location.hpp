@@ -16,7 +16,7 @@ class Location{
         std::string name;
         std::string description;
         bool visited = false;
-        std::map<std::string, std::reference_wrapper<Location>> neighbors; 
+        std::map<std::string, std::reference_wrapper<Location> > neighbors; 
         std::vector<NPC> NPCs;
         std::vector<Item> items;
 
@@ -29,7 +29,6 @@ class Location{
             this->name = name;
             this->description = description;
         }
-
 
         friend std::ostream& operator<<(std::ostream& os, const Location& obj){
             os << obj.name <<"\n\t" << obj.description;
@@ -50,7 +49,7 @@ class Location{
                     std::forward_as_tuple(direction),
                     std::forward_as_tuple(std::ref(location)));
         }
-        const std::map<std::string, std::reference_wrapper<Location>>& get_locations() const {
+        const std::map<std::string, std::reference_wrapper<Location> >& get_locations() const {
         return this->neighbors; 
         }
         void set_visited(){

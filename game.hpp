@@ -6,6 +6,8 @@
 #include <vector>
 #include <map>
 #include <random>
+#include <sstream>
+#include <numeric>
 #include "Location.hpp"
 #include "item.hpp"
 #include "npc.hpp"
@@ -70,9 +72,13 @@ class Game {
         commands["quit"] = &Game::quit;
         commands["q"] = &Game::quit;
         commands["help"] = &Game::show_help;
-        commands["talk to"] = &Game::meet;
+        commands["show help"] = &Game::show_help;
+        commands["items"] = &Game::show_items;
+        commands["look"] = &Game::look;
+
+        /*commands["talk to"] = &Game::meet;
         commands["speak to"] = &Game::meet;
-        commands["interact with"] = &Game::meet;
+        commands["interact with"] = &Game::meet;*/
         return commands;
     }
 
@@ -87,12 +93,29 @@ class Game {
     }
 
     void play() {
-        while (game_in_progress) {
+        while (this->game_in_progress) {
             std::cout << "Enter a command: ";
             std::string command;
-            std::cin >> command;
+            //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::getline(std::cin, command);
+            std::vector<std::string> tokens;
+            std::istringstream iss(command); // Copilot
+            std::string word;
+            while (iss >> word) {
+                tokens.push_back(word);
+            }
+            command = tokens[0];
+            tokens.erase(tokens.begin());
 
+            std::string target = std::accumulate(tokens.begin(), tokens.end(), std::string(""));
+
+            // The code inside this if statement was helped by ChatGPT
+            if (commands.find(command) != commands.end()) {
+                void(Game::*func)(std::vector<std::string>) = commands[command];
+                (this->*func)({target});
+            }
         }
+
     }
 
     void show_help(std::vector<std::string> target) {

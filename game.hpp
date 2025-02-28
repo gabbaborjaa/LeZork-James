@@ -58,7 +58,8 @@ class Game {
         Location court("Basketball Court", "Generic Description");
         Location lockers("Locker Room", "Generic Description2");
 
-        court.add_npc(lebron);
+        lockers.add_npc(lebron);
+        court.add_npc(lebron); // remove one of these
         court.add_item(basketball);
         court.add_location("North", lockers);
 
@@ -75,6 +76,7 @@ class Game {
         commands["show help"] = &Game::show_help;
         commands["items"] = &Game::show_items;
         commands["look"] = &Game::look;
+        commands["meet"] = &Game::meet;
 
         /*commands["talk to"] = &Game::meet;
         commands["speak to"] = &Game::meet;
@@ -97,7 +99,7 @@ class Game {
             std::cout << "Enter a command: ";
             std::string command;
             //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::getline(std::cin, command);
+            std::getline(std::cin, command); // how do we get rid of blank line
             std::vector<std::string> tokens;
             std::istringstream iss(command); // Copilot
             std::string word;
@@ -123,7 +125,15 @@ class Game {
     }
 
     // Speaks to NPC
-    void meet(std::vector<std::string> target);
+    void meet(std::vector<std::string> target) {
+        std::vector<NPC>& npcs = curr_location.get_NPCs();
+        // check if target is in npcs
+        // then maybe set index i = target index in npcs
+        std::string npc_name = npcs[0].getName();
+        std::cout << npc_name << std::endl;
+        std::string npc_message = npcs[0].getMessage();
+        std::cout << npc_message << std::endl;
+    }
 
     void take(std::vector<std::string> target);
 

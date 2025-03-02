@@ -17,7 +17,7 @@ class Game {
     private:
         std::map<std::string, void(Game::*)(std::vector<std::string>)> commands;
         std::vector<Item> items;
-        int weight;
+        float weight;
         std::vector<Location> locations;
         Location curr_location;
         int calories_needed;
@@ -61,9 +61,9 @@ class Game {
 
         lockers.add_npc(lebron);
         court.add_npc(lebron); // remove one of these
-        court.add_item(basketball);
+        lockers.add_item(basketball);
+        court.add_item(basketball);  // remove one of these
         court.add_location("North", lockers);
-
 
         locations.push_back(court);
         locations.push_back(lockers);
@@ -79,6 +79,7 @@ class Game {
         commands["look"] = &Game::look;
         commands["meet"] = &Game::meet;
         commands["talk"] = &Game::talk;
+        commands["take"] = &Game::take;
         /*commands["speak to"] = &Game::meet;
         commands["interact with"] = &Game::meet;*/
         return commands;
@@ -164,7 +165,30 @@ class Game {
         }
     }
  
-    void take(std::vector<std::string> target);
+    void take(std::vector<std::string> target) {
+        std::vector<Item>& item_vector = curr_location.get_items();
+
+        auto iter = std::find_if(item_vector.begin(), item_vector.end(), [target](Item& item) {
+            return item.getName() == target[0];
+        });
+
+        if (iter != item_vector.end()) {
+            int i = std::distance(item_vector.begin(), iter);
+            std::string item_name = item_vector[i].getName();
+            std::cout << item_name << std::endl;
+
+            items.push_back(item_vector[i]);
+            weight += item_vector[i].getWeight();
+
+            std::cout << weight << std::endl;
+            std::cout << items[0] << std::endl;
+
+            curr_location.remove_item(item_vector[i]);
+
+        } else {
+            std::cout << "Item not found!" << std::endl;
+        }
+    }
 
     void give(std::vector<std::string> target);
 

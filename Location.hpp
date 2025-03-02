@@ -50,7 +50,7 @@ class Location{
                     std::forward_as_tuple(std::ref(location)));
         }
         const std::map<std::string, std::reference_wrapper<Location> >& get_locations() const {
-        return this->neighbors; 
+            return this->neighbors;
         }
         void set_visited(){
             this->visited = true;

@@ -64,6 +64,7 @@ class Game {
         lockers.add_item(basketball);
         court.add_item(basketball);  // remove one of these
         court.add_location("North", lockers);
+        lockers.add_location("South", court);
 
         locations.push_back(court);
         locations.push_back(lockers);
@@ -81,6 +82,7 @@ class Game {
         commands["talk"] = &Game::talk;
         commands["take"] = &Game::take;
         commands["give"] = &Game::give;
+
         /*commands["speak to"] = &Game::meet;
         commands["interact with"] = &Game::meet;*/
         return commands;
@@ -98,6 +100,7 @@ class Game {
 
     void play() {
         while (this->game_in_progress) {
+            std::cout << '\n';
             std::cout << "Enter a command: ";
             std::string command;
             std::getline(std::cin, command); // how do we get rid of blank line
@@ -210,10 +213,14 @@ class Game {
         } else {
             std::cout << "Item not in inventory!" << std::endl;
         }
+
+        // now feed the elf or whatever
     }
 
 
-    void go(std::vector<std::string> target);
+    void go(std::vector<std::string> target) {
+
+        }
 
     void show_items(std::vector<std::string> target) {
         std::cout << "Your items" << std::endl;
@@ -234,6 +241,16 @@ class Game {
         for(auto it = NPCs.begin(); it != NPCs.end(); ++it){
             std::cout << *it << std::endl;
         }
+        std::map<std::string, std::reference_wrapper<Location>> neighbors = curr_location.get_locations();
+
+
+        for (const auto& [key, ref] : neighbors) { // ChatGPT
+            Location& loc = ref.get();
+            std::cout << "Key: " << key << ", Location: " << loc << std::endl;
+        }
+        /*for(auto it = neighbors.begin(); it != neighbors.end(); ++it){
+            std::cout << *it << std::endl;
+        }*/
     }
 
     void quit(std::vector<std::string> target) {

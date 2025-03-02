@@ -48,6 +48,10 @@ class Item {
             return weight;
         }
 
+        int getCalories(){
+            return calories;
+        }
+
     private:
         std::string name;
         std::string description;

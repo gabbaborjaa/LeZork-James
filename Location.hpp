@@ -81,6 +81,10 @@ class Location{
             return this->NPCs;
         }
 
+        std::string get_name(){
+            return this->name;
+        }
+
  };
 
  #endif

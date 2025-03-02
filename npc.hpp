@@ -46,6 +46,7 @@ class NPC {
             os << npc.name;
             return os;
         }
+
     private:
         std::string name;
         std::string description;

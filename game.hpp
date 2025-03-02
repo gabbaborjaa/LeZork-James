@@ -37,10 +37,8 @@ class Game {
 
     
     void create_world() {
-        // Create all locations, items, and npcs
-        // Add all items and npcs to the rooms in which they belong.
-        // Add each location to the neighbors which it needs to connect.
 
+        // AI generated items, NPCs, NPC messages, and locations
         std::vector<std::string> lebronMessages = {
             "I am the King!",
             "Always nice to meet a fan!",
@@ -48,16 +46,59 @@ class Game {
             "I'm NEVER retiring!"
         };
 
-        // AI generated items and NPC's
+        std::vector<std::string> bronnyMessages = {
+            "I'm working hard to make it to the league!",
+            "My dad gives me the best advice on and off the court.",
+            "You think I can dunk like him?",
+            "I'm just focused on improving every day."
+        };
+
+        std::vector<std::string> wadeMessages = {
+            "Flash never slows down!",
+            "LeBron and I made history in Miami.",
+            "You ever seen the alley-oop from the 2010 playoffs?",
+            "Retirement is great, but I still got buckets!"
+        };
+
+        std::vector<std::string> davisMessages = {
+            "Defense wins championships.",
+            "If I stay healthy, nobody can stop me.",
+            "LeBron always calls me ‘The Brow’!",
+            "I need to ice my knees after every game."
+        };
+
+        std::vector<std::string> kyrieMessages = {
+            "Basketball is an art form.",
+            "That 2016 Finals shot? Legendary.",
+            "LeBron and I had our ups and downs, but we made history.",
+            "Have you ever thought about the shape of the Earth?"
+        };
+
         Item basketball("Basketball", "Lebron's favorite ball", 40, 2.f);
         Item proteinShake("Protein Shake", "A delicious chocolate bar", 250, 0.2f);
         Item championshipRing("Championship Ring", "A shimmering ring symbolizing one of LeBron's NBA titles. It glows with a legendary aura.", 0, 0.1);
         Item sneakers("Nike LeBron Sneakers", "A pair of iconic Nike LeBron 20s. Wearing them might help you move faster on and off the court.", 0, 0.5f);
-
+        Item jersey("Official Jersey", "An official Los Angeles Lakers #23 jersey.", 0, 0.3f);
+        Item rookieCard("Rookie Card", "A rare 2003 rookie card, highly valuable among collectors.", 0, 0.02f);
+        Item headband("Basketball Headband", "A white headband, reminiscent of an early career look.", 0, 0.1f);
+        Item playbook("Basketball Playbook", "A notebook filled with high-IQ basketball strategies.", 0, 0.8f);
+        Item actionFigure("Basketball Action Figure", "A detailed collectible figure in a dunking pose.", 0, 0.5f);
+        Item mvpStatue("MVP Trophy", "A miniature replica of the NBA MVP trophy.", 0, 1.0f);
 
         NPC lebron("LeBron James", "A legendary basketball player", lebronMessages);
-        Location court("Basketball Court", "Generic Description");
-        Location lockers("Locker Room", "Generic Description2");
+        NPC bronny("Bronny James", "A young and talented basketball player following in his father's footsteps.", bronnyMessages);
+        NPC wade("Dwyane Wade", "A retired NBA superstar and close friend of LeBron, known for their Miami Heat days.", wadeMessages);
+        NPC davis("Anthony Davis", "A dominant big man and LeBron's teammate, known for his elite defense and versatility.", davisMessages);
+        NPC kyrie("Kyrie Irving", "A skilled point guard and former teammate of LeBron, known for his clutch plays.", kyrieMessages);
+
+        Location court("Basketball Court", "A bright hardwood court, buzzing with the sound of sneakers and bouncing balls.");
+        Location kingSuite("King's Suite", "A luxurious VIP suite overlooking the court, where LeBron watches the game in style.");
+        Location lockers("Locker Room", "A space filled with the scent of sweat and cologne, as players prepare for the game.");
+        Location akronHometown("Akron Hometown", "The streets where LeBron grew up, inspiring millions with his rise to greatness.");
+        Location championshipRoom("Championship Room", "A trophy room showcasing LeBron’s four NBA championship rings and memorable moments.");
+        Location lebronHouse("LeBron's House", "A lavish mansion in Los Angeles, where LeBron relaxes and spends time with family.");
+        Location philanthropyCenter("Philanthropy Center", "LeBron's charitable headquarters, where he leads initiatives to help underserved communities.");
+        Location spaceJamStudio("Space Jam Studio", "The set where LeBron filmed his iconic role in *Space Jam: A New Legacy*, blending basketball with Hollywood.");
 
         lockers.add_npc(lebron);
         court.add_npc(lebron); // remove one of these
@@ -179,16 +220,10 @@ class Game {
         if (iter != item_vector.end()) {
             int i = std::distance(item_vector.begin(), iter);
             std::string item_name = item_vector[i].getName();
-            std::cout << item_name << std::endl;
-
             items.push_back(item_vector[i]);
             weight += item_vector[i].getWeight();
-
-            std::cout << weight << std::endl;
-            std::cout << items[0] << std::endl;
-
+            std::cout << "Took " << item_name << "!" << std::endl;
             curr_location.remove_item(item_vector[i]);
-
         } else {
             std::cout << "Item not found!" << std::endl;
         }
@@ -203,10 +238,17 @@ class Game {
         if (iter != items.end()) {
             int i = std::distance(items.begin(), iter);
             std::string item_name = items[i].getName();
-            std::cout << item_name << std::endl;
+            std::cout << "Gave " << item_name << "!" << std::endl;
 
             curr_location.add_item(items[i]);
             weight -= items[i].getWeight();
+
+            if (curr_location.get_name() == "Basketball Court") {
+                if (items[i].getCalories()) {
+                    calories_needed -= items[i].getCalories();
+                }
+                std::cout << "LeBron James needs: " << calories_needed << " more calorie(s)!" << std::endl;
+            }
 
             items.erase(std::remove(this->items.begin(), this->items.end(), items[i]));
 
@@ -215,6 +257,7 @@ class Game {
         }
 
         // now feed the elf or whatever
+
     }
 
 
@@ -244,10 +287,10 @@ class Game {
         std::map<std::string, std::reference_wrapper<Location>> neighbors = curr_location.get_locations();
 
 
-        for (const auto& [key, ref] : neighbors) { // ChatGPT
+        /*for (const auto& [key, ref] : neighbors) { // ChatGPT
             Location& loc = ref.get();
             std::cout << "Key: " << key << ", Location: " << loc << std::endl;
-        }
+        }*/
         /*for(auto it = neighbors.begin(); it != neighbors.end(); ++it){
             std::cout << *it << std::endl;
         }*/

@@ -95,20 +95,62 @@ class Game {
         Location kingSuite("King's Suite", "A luxurious VIP suite overlooking the court, where LeBron watches the game in style.");
         Location lockers("Locker Room", "A space filled with the scent of sweat and cologne, as players prepare for the game.");
         Location akronHometown("Akron Hometown", "The streets where LeBron grew up, inspiring millions with his rise to greatness.");
-        Location championshipRoom("Championship Room", "A trophy room showcasing LeBron’s four NBA championship rings and memorable moments.");
+        Location championshipRoom("Championship Room", "A trophy room showcasing LeBron's four NBA championship rings and memorable moments.");
         Location lebronHouse("LeBron's House", "A lavish mansion in Los Angeles, where LeBron relaxes and spends time with family.");
         Location philanthropyCenter("Philanthropy Center", "LeBron's charitable headquarters, where he leads initiatives to help underserved communities.");
         Location spaceJamStudio("Space Jam Studio", "The set where LeBron filmed his iconic role in *Space Jam: A New Legacy*, blending basketball with Hollywood.");
 
-        lockers.add_npc(lebron);
-        court.add_npc(lebron); // remove one of these
-        lockers.add_item(basketball);
-        court.add_item(basketball);  // remove one of these
-        court.add_location("North", lockers);
-        lockers.add_location("South", court);
+        court.add_npc(lebron);
+        court.add_item(basketball);
+        court.add_location("East", lockers);
+        court.add_location("South", kingSuite);
+
+        kingSuite.add_npc(davis);
+        kingSuite.add_item(playbook);
+        kingSuite.add_location("East", lebronHouse);
+        kingSuite.add_location("South", philanthropyCenter);
+        kingSuite.add_location("North", court);
+
+        philanthropyCenter.add_item(mvpStatue);
+        philanthropyCenter.add_location("East", spaceJamStudio);
+        philanthropyCenter.add_location("North", kingSuite);
+
+        lockers.add_npc(kyrie);
+        lockers.add_item(proteinShake);
+        lockers.add_location("East", akronHometown);
+        lockers.add_location("South", lebronHouse);
+        lockers.add_location("West", court);
+
+        lebronHouse.add_npc(bronny);
+        lebronHouse.add_item(jersey);
+        lebronHouse.add_item(sneakers);
+        lebronHouse.add_location("North", lockers);
+        lebronHouse.add_location("East", championshipRoom);
+        lebronHouse.add_location("South", spaceJamStudio);
+        lebronHouse.add_location("West", kingSuite);
+
+        spaceJamStudio.add_item(headband);
+        spaceJamStudio.add_location("North", lebronHouse);
+        spaceJamStudio.add_location("West", philanthropyCenter);
+
+        akronHometown.add_item(actionFigure);
+        akronHometown.add_item(rookieCard);
+        akronHometown.add_location("South", championshipRoom);
+        akronHometown.add_location("West", lockers);
+
+        championshipRoom.add_npc(wade);
+        championshipRoom.add_item(championshipRing);
+        championshipRoom.add_location("West", lebronHouse);
+        championshipRoom.add_location("North", akronHometown);
 
         locations.push_back(court);
+        locations.push_back(kingSuite);
+        locations.push_back(philanthropyCenter);
         locations.push_back(lockers);
+        locations.push_back(lebronHouse);
+        locations.push_back(spaceJamStudio);
+        locations.push_back(akronHometown);
+        locations.push_back(championshipRoom);
     }
 
     std::map<std::string, void(Game::*)(std::vector<std::string>)> setup_commands() {

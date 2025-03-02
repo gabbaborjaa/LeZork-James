@@ -8,6 +8,7 @@
 #include <random>
 #include <sstream>
 #include <numeric>
+#include <algorithm>
 #include "Location.hpp"
 #include "item.hpp"
 #include "npc.hpp"
@@ -77,9 +78,8 @@ class Game {
         commands["items"] = &Game::show_items;
         commands["look"] = &Game::look;
         commands["meet"] = &Game::meet;
-
-        /*commands["talk to"] = &Game::meet;
-        commands["speak to"] = &Game::meet;
+        commands["talk"] = &Game::talk;
+        /*commands["speak to"] = &Game::meet;
         commands["interact with"] = &Game::meet;*/
         return commands;
     }
@@ -98,7 +98,6 @@ class Game {
         while (this->game_in_progress) {
             std::cout << "Enter a command: ";
             std::string command;
-            //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::getline(std::cin, command); // how do we get rid of blank line
             std::vector<std::string> tokens;
             std::istringstream iss(command); // Copilot
@@ -109,7 +108,12 @@ class Game {
             command = tokens[0];
             tokens.erase(tokens.begin());
 
-            std::string target = std::accumulate(tokens.begin(), tokens.end(), std::string(""));
+            std::ostringstream oss;
+            for (int i = 0; i < tokens.size(); ++i) {
+                if (i > 0) oss << " "; // used ChatGPT to find out how to add spaces between words
+                oss << tokens[i];
+            }
+            std::string target = oss.str();
 
             // The code inside this if statement was helped by ChatGPT
             if (commands.find(command) != commands.end()) {
@@ -124,17 +128,42 @@ class Game {
         std::cout << "Available Commands:" << std::endl;
     }
 
-    // Speaks to NPC
+    void talk(std::vector<std::string> target) {
+            std::vector<NPC>& npcs = curr_location.get_NPCs();
+
+            // ChatGPT helped with iter
+            auto iter = std::find_if(npcs.begin(), npcs.end(), [target](NPC& npc) {
+                return npc.getName() == target[0];
+            });
+
+            if (iter != npcs.end()) {
+                int i = std::distance(npcs.begin(), iter);
+                std::string npc_message = npcs[i].getMessage();
+                std::cout << npc_message << std::endl;
+            } else {
+                std::cout << "NPC not found!" << std::endl;
+            }
+        }
+
     void meet(std::vector<std::string> target) {
         std::vector<NPC>& npcs = curr_location.get_NPCs();
-        // check if target is in npcs
-        // then maybe set index i = target index in npcs
-        std::string npc_name = npcs[0].getName();
-        std::cout << npc_name << std::endl;
-        std::string npc_message = npcs[0].getMessage();
-        std::cout << npc_message << std::endl;
-    }
 
+        // ChatGPT helped with iter
+        auto iter = std::find_if(npcs.begin(), npcs.end(), [target](NPC& npc) {
+            return npc.getName() == target[0];
+        });
+
+        if (iter != npcs.end()) {
+            int i = std::distance(npcs.begin(), iter);
+            std::string npc_name = npcs[i].getName();
+            std::cout << npc_name << std::endl;
+            std::string npc_message = npcs[i].getDescription();
+            std::cout << npc_message << std::endl;
+        } else {
+            std::cout << "NPC not found!" << std::endl;
+        }
+    }
+ 
     void take(std::vector<std::string> target);
 
     void give(std::vector<std::string> target);

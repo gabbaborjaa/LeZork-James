@@ -80,6 +80,7 @@ class Game {
         commands["meet"] = &Game::meet;
         commands["talk"] = &Game::talk;
         commands["take"] = &Game::take;
+        commands["give"] = &Game::give;
         /*commands["speak to"] = &Game::meet;
         commands["interact with"] = &Game::meet;*/
         return commands;
@@ -190,7 +191,27 @@ class Game {
         }
     }
 
-    void give(std::vector<std::string> target);
+    void give(std::vector<std::string> target) {
+
+        auto iter = std::find_if(items.begin(), items.end(), [target](Item& item) {
+            return item.getName() == target[0];
+        });
+
+        if (iter != items.end()) {
+            int i = std::distance(items.begin(), iter);
+            std::string item_name = items[i].getName();
+            std::cout << item_name << std::endl;
+
+            curr_location.add_item(items[i]);
+            weight -= items[i].getWeight();
+
+            items.erase(std::remove(this->items.begin(), this->items.end(), items[i]));
+
+        } else {
+            std::cout << "Item not in inventory!" << std::endl;
+        }
+    }
+
 
     void go(std::vector<std::string> target);
 

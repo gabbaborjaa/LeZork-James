@@ -220,6 +220,7 @@ class Game {
         commands["speak"] = &Game::talk;
         commands["interact"] = &Game::meet;
         commands["dream"] = &Game::dream;
+        commands["hoop"] = &Game::hoop;
         return commands;
     }
 
@@ -470,8 +471,6 @@ class Game {
         this->game_in_progress = false;
     }
 
-    // Add two additional commands here
-
     // Function gives inspirational words to the user
     void dream(std::vector<std::string> target){
         std::cout << "Dedication makes dreams come true - Kobe Bryant" << std::endl;
@@ -488,6 +487,24 @@ class Game {
             std::cout << "You have received a special item: " << mambaMentality.getName() << std::endl;
         }
     }
+
+    // Hoops with LeBron if in basketball court
+    // Raises calories_needed by 100 since LeBron always wins.
+    void hoop(std::vector<std::string> target){
+        if (curr_location.get_name() == "Basketball Court") {
+            std::cout << "You have challenged LeBron to a basketball game." << std::endl;
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::uniform_int_distribution<> dis(0, 20);
+            std::cout << "LeBron scored 21 points." << std::endl;
+            std::cout << "You scored " << dis(gen) << " points." << std::endl;
+            std::cout << "Since you lost, LeBron now needs 100 more calories than before." << std::endl;
+            calories_needed += 100;
+        } else {
+            std::cout << "You must be in the basketball court if you want to hoop with LeBron!" << std::endl;
+        }
+    }
+
 };
 
 #endif //GAME_HPP

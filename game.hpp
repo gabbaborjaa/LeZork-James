@@ -82,14 +82,14 @@ class Game {
         };
 
         Item basketball("Basketball", "Lebron's favorite ball", 40, 4);
-        Item proteinShake("Protein Shake", "A delicious chocolate bar", 150, 7);
+        Item proteinShake("Protein Shake", "A delicious protein shake", 150, 7);
         Item championshipRing("Championship Ring", "A shimmering ring symbolizing one of LeBron's NBA titles. It glows with a legendary aura.", 225, 2);
         Item sneakers("Nike LeBron Sneakers", "A pair of iconic Nike LeBron 20s. Wearing them might help you move faster on and off the court.", 70, 14);
         Item jersey("Official Jersey", "An official Los Angeles Lakers #23 jersey.", 0, 12);
         Item rookieCard("Rookie Card", "A rare 2003 rookie card, highly valuable among collectors.", 0, 3.1);
-        Item headband("Basketball Headband", "A white headband, reminiscent of an early career look.", 0, 6);
-        Item playbook("Basketball Playbook", "A notebook filled with high-IQ basketball strategies.", 90, 11.5);
-        Item actionFigure("Basketball Action Figure", "A detailed collectible figure in a dunking pose.", 110, 8);
+        Item headband("Headband", "A white headband, reminiscent of an early career look.", 0, 6);
+        Item playbook("Playbook", "A notebook filled with high-IQ basketball strategies.", 90, 11.5);
+        Item actionFigure("Action Figure", "A detailed collectible figure in a dunking pose.", 110, 8);
         Item mvpStatue("MVP Trophy", "A miniature replica of the NBA MVP trophy.", 200, 30);
 
         NPC lebron("LeBron James", "A legendary basketball player", lebronMessages);
@@ -107,29 +107,6 @@ class Game {
         Location philanthropyCenter("Philanthropy Center", "LeBron's charitable headquarters, where he leads initiatives to help underserved communities.");
         Location spaceJamStudio("Space Jam Studio", "The set where LeBron filmed his iconic role in *Space Jam: A New Legacy*, blending basketball with Hollywood.");
 
-        court.add_npc(lebron);
-        court.add_item(basketball);
-
-        kingSuite.add_npc(davis);
-        kingSuite.add_item(playbook);  
-
-        philanthropyCenter.add_item(mvpStatue);
-
-        lockers.add_npc(kyrie);
-        lockers.add_item(proteinShake);
-
-        lebronHouse.add_npc(bronny);
-        lebronHouse.add_item(jersey);
-        lebronHouse.add_item(sneakers);
-
-        spaceJamStudio.add_item(headband);
-
-        akronHometown.add_item(actionFigure);
-        akronHometown.add_item(rookieCard);
-
-        championshipRoom.add_npc(wade);
-        championshipRoom.add_item(championshipRing);
-
         locations.push_back(court);//0
         locations.push_back(kingSuite);//01
         locations.push_back(philanthropyCenter);//02
@@ -138,6 +115,44 @@ class Game {
         locations.push_back(spaceJamStudio);//05
         locations.push_back(akronHometown);//06
         locations.push_back(championshipRoom);//07
+
+        locations[0].add_npc(lebron);
+        locations[0].add_item(basketball);
+        court.add_npc(lebron);
+        court.add_item(basketball);
+
+        locations[1].add_npc(davis);
+        locations[1].add_item(playbook);
+        kingSuite.add_npc(davis);
+        kingSuite.add_item(playbook);
+
+        locations[2].add_item(mvpStatue);
+        philanthropyCenter.add_item(mvpStatue);
+
+        locations[3].add_npc(kyrie);
+        locations[3].add_item(proteinShake);
+        lockers.add_npc(kyrie);
+        lockers.add_item(proteinShake);
+
+        locations[4].add_npc(bronny);
+        locations[4].add_item(jersey);
+        lebronHouse.add_item(sneakers);
+        lebronHouse.add_npc(bronny);
+        lebronHouse.add_item(jersey);
+        lebronHouse.add_item(sneakers);
+
+        locations[5].add_item(headband);
+        spaceJamStudio.add_item(headband);
+
+        locations[6].add_item(actionFigure);
+        locations[6].add_item(rookieCard);
+        akronHometown.add_item(actionFigure);
+        akronHometown.add_item(rookieCard);
+
+        locations[7].add_npc(wade);
+        locations[7].add_item(championshipRing);
+        championshipRoom.add_npc(wade);
+        championshipRoom.add_item(championshipRing);
 
         locations[0].add_location("East",locations[3]);
         locations[0].add_location("South",locations[1]);
@@ -328,7 +343,12 @@ class Game {
             items.push_back(item_vector[i]);
             weight += item_vector[i].getWeight();
             std::cout << "Took " << item_name << "!" << std::endl;
-            curr_location.remove_item(item_vector[i]);
+            for (auto it = locations.begin(); it != locations.end(); ++it) {
+                if (it->get_name() == curr_location.get_name()) {
+                    std::cout << "Done!" << std::endl;
+                    it->remove_item(item_vector[i]);
+                }
+            }
         } else {
             std::cout << "Item not found!" << std::endl;
         }
@@ -374,7 +394,6 @@ class Game {
         }
 
         std::string direction = target[0];
-        curr_location.set_visited();
 
         if (weight > 30) {
             std::cout << "Too heavy! Can't move." << std::endl;
@@ -385,20 +404,11 @@ class Game {
         auto it = neighbors.find(direction);
         if (it != neighbors.end()) {
             curr_location = it->second.get();
+            it->second.get().set_visited();
             std::cout << "You moved to: " << curr_location.get_name() << std::endl;
         } else {
             std::cout << "You can't go that way." << std::endl;
         }
-        
-        //     std::map<std::string, std::reference_wrapper<Location>> neighbors = curr_location.get_locations();
-        //     for (const auto& [key, ref] : neighbors) { // ChatGPT
-        //         Location& loc = ref.get();
-        //         if (key == target[0]) {
-        //             curr_location = loc;
-        //             break;
-        //         }
-        //     }
-        // }
     }
 
     void show_items(std::vector<std::string> target) {
@@ -411,25 +421,35 @@ class Game {
 
     void look(std::vector<std::string> target){
         std::cout << this->curr_location << std::endl;
-        
         std::vector<Item> items = this->curr_location.get_items();
         std::vector<NPC> NPCs = this->curr_location.get_NPCs();
-        for(auto it = items.begin(); it != items.end(); ++it){
-            std::cout << *it << std::endl;
+        if (NPCs.size() > 0) {
+            std::cout << "\nYou see the following NPCs:" << std::endl;
+            for(auto it = NPCs.begin(); it != NPCs.end(); ++it){
+                std::cout << " - "<< *it << std::endl;
+            }
+        } else {
+            std::cout << "\nYou are alone." << std::endl;
         }
-        for(auto it = NPCs.begin(); it != NPCs.end(); ++it){
-            std::cout << *it << std::endl;
+        if (items.size() > 0) {
+            std::cout << "\nYou see the following items:" << std::endl;
+            for(auto it = items.begin(); it != items.end(); ++it){
+                std::cout << " - "<< *it << std::endl;
+            }
+        } else {
+            std::cout << "\nThere are no items." << std::endl;
         }
+
         std::map<std::string, std::reference_wrapper<Location>> neighbors = curr_location.get_locations();
-
-
+        std::cout << "\nYou can go in the following directions:" << std::endl;
         for (const auto& [key, ref] : neighbors) { // ChatGPT
             Location& loc = ref.get();
-            std::cout << "Key: " << key << ", Location: " << loc << std::endl;
+            if (loc.get_visited()) {
+                std::cout << " - " << key << " - " << loc.get_name() << std::endl;
+            } else {
+                std::cout << " - " << key << " - Unknown" << std::endl;
+            }
         }
-        /*for(auto it = neighbors.begin(); it != neighbors.end(); ++it){
-            std::cout << *it << std::endl;
-        }*/
     }
 
     void quit(std::vector<std::string> target) {

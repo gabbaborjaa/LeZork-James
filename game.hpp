@@ -23,6 +23,7 @@
 #include "item.hpp"
 #include "npc.hpp"
 
+// Game class which holds all game logic.
 class Game {
     private:
         std::map<std::string, void(Game::*)(std::vector<std::string>) > commands;
@@ -116,6 +117,7 @@ class Game {
         locations.push_back(akronHometown);//06
         locations.push_back(championshipRoom);//07
 
+        // Adding everything to each location
         locations[0].add_npc(lebron);
         locations[0].add_item(basketball);
         court.add_npc(lebron);
@@ -201,10 +203,9 @@ class Game {
         locations[7].add_location("North",locations[6]);
         championshipRoom.add_location("West", lebronHouse);
         championshipRoom.add_location("North", akronHometown);
-
-        
     }
 
+    // Set up commands using a map
     std::map<std::string, void(Game::*)(std::vector<std::string>)> setup_commands() {
         std::map<std::string, void(Game::*)(std::vector<std::string>)> commands;
         commands["quit"] = &Game::quit;
@@ -224,6 +225,7 @@ class Game {
         return commands;
     }
 
+    // Sets curr_location to a random location
     Location random_location(){
         if (locations.empty()) {
             throw std::runtime_error("No locations available");
@@ -235,6 +237,7 @@ class Game {
     }
 
     void play() {
+        // Main game loop
         while (this->game_in_progress) {
             std::cout << '\n';
             std::cout << "Enter a command: ";
@@ -246,16 +249,20 @@ class Game {
             while (iss >> word) {
                 tokens.push_back(word);
             }
+            // If the first token is "show", then get rid of it because we don't need it.
             if (tokens[0] == "show") {
                 tokens.erase(tokens.begin());
             }
+            // Set command to the first word input
             command = tokens[0];
             tokens.erase(tokens.begin());
 
+            // If any of these tokens are after the command then we get rid of them.
             if (tokens[0] == "to" or tokens[0] == "with" or tokens[0] == "the") {
                 tokens.erase(tokens.begin());
             }
 
+            // Combines tokens back into one string
             std::ostringstream oss;
             for (int i = 0; i < tokens.size(); ++i) {
                 if (i > 0) oss << " "; // used ChatGPT to find out how to add spaces between words
@@ -264,11 +271,14 @@ class Game {
             std::string target = oss.str();
 
             // The code inside this if statement was helped by ChatGPT
+            // Performs the command that was input by the user
             if (commands.find(command) != commands.end()) {
                 void(Game::*func)(std::vector<std::string>) = commands[command];
                 (this->*func)({target});
             }
         }
+        // Outside of the game loop, so when the game is finished.
+        // If LeBron still needs calories, then you lose.
         if (calories_needed) {
             std::cout << "You lose!" << std::endl;
         } else {
@@ -276,6 +286,7 @@ class Game {
         }
     }
 
+    // Gets the date and time and shows all available commands
     void show_help(std::vector<std::string> target) {
         // Date and time helped by Copilot
         auto now = std::chrono::system_clock::now();
@@ -296,6 +307,7 @@ class Game {
 
     }
 
+    // Talks to the NPC target
     void talk(std::vector<std::string> target) {
             std::vector<NPC>& npcs = curr_location.get_NPCs();
 
@@ -313,6 +325,7 @@ class Game {
             }
         }
 
+    // Gives the name and description of the NPC target
     void meet(std::vector<std::string> target) {
         std::vector<NPC>& npcs = curr_location.get_NPCs();
 
@@ -331,7 +344,8 @@ class Game {
             std::cout << "NPC not found!" << std::endl;
         }
     }
- 
+
+    // Takes an item from the current location and adds it to your inventory
     void take(std::vector<std::string> target) {
         std::vector<Item>& item_vector = curr_location.get_items();
 
@@ -346,6 +360,7 @@ class Game {
             weight += item_vector[i].getWeight();
             std::cout << "Took " << item_name << "!" << std::endl;
             curr_location.remove_item(item_vector[i]);
+            // Removes item from locations vector
             for (auto it = locations.begin(); it != locations.end(); ++it) {
                 if (it->get_name() == curr_location.get_name()) {
                     it->remove_item(item_vector[i]);
@@ -356,6 +371,7 @@ class Game {
         }
     }
 
+    // Puts item in curr_location or gives item to LeBron if in basketball court.
     void give(std::vector<std::string> target) {
         auto iter = std::find_if(items.begin(), items.end(), [target](Item& item) {
             return item.getName() == target[0];
@@ -366,8 +382,10 @@ class Game {
             std::string item_name = items[i].getName();
             std::cout << "Gave " << item_name << "!" << std::endl;
 
+            // If in basketball court, then you can give items to LeBron.
             if (curr_location.get_name() == "Basketball Court") {
                 if (items[i].getCalories() > 0) {
+                    // If the item has calories, then decrease the calories_needed.
                     calories_needed -= items[i].getCalories();
                     if (calories_needed <= 0) {
                         calories_needed = 0;
@@ -375,12 +393,14 @@ class Game {
                     }
                     std::cout << "LeBron James needs: " << calories_needed << " more calorie(s)!" << std::endl;
                 } else {
+                    // If item is inedible, then get sent to a random location.
                     curr_location = random_location();
                     std::cout << "You upset LeBron by giving him something with 0 calories." << std::endl;
                     std::cout << "LeBron summoned a spell to teleport you." << std::endl;
                     std::cout << "You are now in a different location." << std::endl;
                 }
             } else {
+                // If not in basketball court, then add item to the current location.
                 curr_location.add_item(items[i]);
                 for (auto it = locations.begin(); it != locations.end(); ++it) {
                     if (it->get_name() == curr_location.get_name()) {
@@ -388,6 +408,7 @@ class Game {
                     }
                 }
             }
+            // Decrease weight and remove item from inventory.
             weight -= items[i].getWeight();
             items.erase(std::remove(this->items.begin(), this->items.end(), items[i]));
 
@@ -396,6 +417,7 @@ class Game {
         }
     }
 
+    // Goes to a neighboring location
     void go(std::vector<std::string> target) {
         if (target.empty()) {
              std::cout << "Specify a direction to go." << std::endl;
@@ -404,20 +426,24 @@ class Game {
 
         std::string direction = target[0];
 
+        // set the current location to visited
         for (auto it = locations.begin(); it != locations.end(); ++it) {
             if (it->get_name() == curr_location.get_name()) {
                 it->set_visited();
             }
         }
 
+        // If weight > 30, then don't let them change locations.
         if (weight > 30) {
             std::cout << "Too heavy! Can't move." << std::endl;
             return;
         }
-        
+
+        // finds all neighbors of the current location
         const auto& neighbors = curr_location.get_locations();
         auto it = neighbors.find(direction);
         if (it != neighbors.end()) {
+            // Unwraps the neighbor location and sets the current location to it.
             curr_location = it->second.get();
             std::cout << "You moved to: " << curr_location.get_name() << std::endl;
         } else {
@@ -425,6 +451,7 @@ class Game {
         }
     }
 
+    // Shows the items in your inventory along with the weight.
     void show_items(std::vector<std::string> target) {
         std::cout << "Your items:" << std::endl;
         for (auto it = items.begin(); it != items.end(); ++it) {
@@ -433,10 +460,12 @@ class Game {
         std::cout << "\nYour weight: " << weight << " lbs" << std::endl;
     }
 
+    // Looks in the current location for NPCs, items, and neighboring locations.
     void look(std::vector<std::string> target){
         std::cout << this->curr_location << std::endl;
         std::vector<Item> items = this->curr_location.get_items();
         std::vector<NPC> NPCs = this->curr_location.get_NPCs();
+        // Prints NPC info
         if (NPCs.size() > 0) {
             std::cout << "\nYou see the following NPCs:" << std::endl;
             for(auto it = NPCs.begin(); it != NPCs.end(); ++it){
@@ -445,18 +474,20 @@ class Game {
         } else {
             std::cout << "\nYou are alone." << std::endl;
         }
+        // Prints item info
         if (items.size() > 0) {
             std::cout << "\nYou see the following items:" << std::endl;
             for(auto it = items.begin(); it != items.end(); ++it){
-                std::cout << " - "<< *it << std::endl;
+                std::cout << " - " << *it << std::endl;
             }
         } else {
             std::cout << "\nThere are no items." << std::endl;
         }
-
+        // Prints neighboring locations
         std::map<std::string, std::reference_wrapper<Location>> neighbors = curr_location.get_locations();
         std::cout << "\nYou can go in the following directions:" << std::endl;
         for (const auto& [key, ref] : neighbors) { // ChatGPT
+            // Unwraps the neighboring location
             Location& loc = ref.get();
             if (loc.get_visited()) {
                 std::cout << " - " << key << " - " << loc.get_name() << std::endl;
@@ -466,6 +497,7 @@ class Game {
         }
     }
 
+    // Sets game_in_progress = False which ends the game
     void quit(std::vector<std::string> target) {
         std::cout << "Quit Game." << std::endl;
         this->game_in_progress = false;
@@ -493,6 +525,7 @@ class Game {
     void hoop(std::vector<std::string> target){
         if (curr_location.get_name() == "Basketball Court") {
             std::cout << "You have challenged LeBron to a basketball game." << std::endl;
+            // Generates a random number for the player's score.
             std::random_device rd;
             std::mt19937 gen(rd());
             std::uniform_int_distribution<> dis(0, 20);

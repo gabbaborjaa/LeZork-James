@@ -346,7 +346,6 @@ class Game {
             curr_location.remove_item(item_vector[i]);
             for (auto it = locations.begin(); it != locations.end(); ++it) {
                 if (it->get_name() == curr_location.get_name()) {
-                    std::cout << "Done!" << std::endl;
                     it->remove_item(item_vector[i]);
                 }
             }
@@ -369,7 +368,6 @@ class Game {
             curr_location.add_item(items[i]);
             for (auto it = locations.begin(); it != locations.end(); ++it) {
                 if (it->get_name() == curr_location.get_name()) {
-                    std::cout << "Done!" << std::endl;
                     it->add_item(items[i]);
                 }
             }
@@ -419,11 +417,11 @@ class Game {
     }
 
     void show_items(std::vector<std::string> target) {
-        std::cout << "Your items" << std::endl;
+        std::cout << "Your items:" << std::endl;
         for (auto it = items.begin(); it != items.end(); ++it) {
-            std::cout << *it << std::endl;
+            std::cout << " - " << *it << std::endl;
         }
-        std::cout << "Your weight: " << weight << " lbs" << std::endl;
+        std::cout << "\nYour weight: " << weight << " lbs" << std::endl;
     }
 
     void look(std::vector<std::string> target){
@@ -444,7 +442,7 @@ class Game {
                 std::cout << " - "<< *it << std::endl;
             }
         } else {
-            std::cout << "There are no items." << std::endl;
+            std::cout << "\nThere are no items." << std::endl;
         }
 
         std::map<std::string, std::reference_wrapper<Location>> neighbors = curr_location.get_locations();

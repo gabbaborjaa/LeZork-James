@@ -1,3 +1,11 @@
+/*
+ * Team Members:
+ * Drew Baine
+ * Gab Borja
+ * Hunter McGraw
+ * 3/2/25
+ */
+
 #ifndef GAME_HPP
 #define GAME_HPP
 
@@ -7,8 +15,10 @@
 #include <map>
 #include <random>
 #include <sstream>
-#include <numeric>
 #include <algorithm>
+#include <ctime>
+#include <chrono>
+#include <iomanip>
 #include "Location.hpp"
 #include "item.hpp"
 #include "npc.hpp"
@@ -33,7 +43,6 @@ class Game {
             this->curr_location = random_location();
         }
 
-    
     void create_world() {
 
         // AI generated items, NPCs, NPC messages, and locations
@@ -156,7 +165,6 @@ class Game {
         commands["quit"] = &Game::quit;
         commands["q"] = &Game::quit;
         commands["help"] = &Game::show_help;
-        commands["show help"] = &Game::show_help;
         commands["items"] = &Game::show_items;
         commands["look"] = &Game::look;
         commands["meet"] = &Game::meet;
@@ -164,9 +172,8 @@ class Game {
         commands["take"] = &Game::take;
         commands["give"] = &Game::give;
         commands["go"] = &Game::go;
-
-        /*commands["speak to"] = &Game::meet;
-        commands["interact with"] = &Game::meet;*/
+        commands["speak"] = &Game::talk;
+        commands["interact"] = &Game::meet;
         return commands;
     }
 
@@ -192,8 +199,15 @@ class Game {
             while (iss >> word) {
                 tokens.push_back(word);
             }
+            if (tokens[0] == "show") {
+                tokens.erase(tokens.begin());
+            }
             command = tokens[0];
             tokens.erase(tokens.begin());
+
+            if (tokens[0] == "to" or tokens[0] == "with" or tokens[0] == "the") {
+                tokens.erase(tokens.begin());
+            }
 
             std::ostringstream oss;
             for (int i = 0; i < tokens.size(); ++i) {
@@ -209,22 +223,29 @@ class Game {
             }
         }
         if (calories_needed) {
-            std::cout << 'You lose!';
+            std::cout << "You lose!" << std::endl;
         } else {
-            std::cout << 'You win!';
+            std::cout << "You win!" << std::endl;
         }
     }
 
     void show_help(std::vector<std::string> target) {
+        // Date and time helped by Copilot
+        auto now = std::chrono::system_clock::now();
+        std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+        std::tm* now_tm = localtime(&now_c);
+        std::cout << "Date and Time: " << std::put_time(now_tm, "%m-%d-%Y - %H:%M:%S") << '\n' << std::endl;
+
         std::cout << "Available Commands:" << std::endl;
-        std::cout << "quit, q - Quit the game" << std::endl;
-        std::cout << "help - Show this help message" << std::endl;
-        std::cout << "talk to, speak to, interact with - Interact with an NPC" << std::endl;
-        std::cout << "give [item] -- Removes item from inventory and places it in Location's inventory" << std::endl;
-        std::cout << "take" << std::endl;
-        std::cout << "go" << std::endl;
-        std::cout << "show_items" << std::endl;
-        std::cout << "look" << std::endl;
+        std::cout << "(show) help -> lists all commands." << std::endl;
+        std::cout << "quit -> quits the program." << std::endl;
+        std::cout << "(show) items -> lists items in inventory." << std::endl;
+        std::cout << "meet -> gives name and description of NPC." << std::endl;
+        std::cout << "talk (to) -> gets a message from the NPC." << std::endl;
+        std::cout << "look -> looks in the current location and what's in it." << std::endl;
+        std::cout << "go -> goes to a neighboring location." << std::endl;
+        std::cout << "take -> takes item from current location." << std::endl;
+        std::cout << "give -> puts item in current location or gives to LeBron if in the court." << std::endl;
 
     }
 
@@ -300,6 +321,8 @@ class Game {
             if (curr_location.get_name() == "Basketball Court") {
                 if (items[i].getCalories()) {
                     calories_needed -= items[i].getCalories();
+                } else {
+                    curr_location = random_location();
                 }
                 if (calories_needed <= 0) {
                     calories_needed = 0;
@@ -313,7 +336,6 @@ class Game {
             std::cout << "Item not in inventory!" << std::endl;
         }
     }
-
 
     void go(std::vector<std::string> target) {
         curr_location.set_visited();
@@ -363,7 +385,7 @@ class Game {
     }
 
     void quit(std::vector<std::string> target) {
-        std::cout << "Game Quit" << std::endl;
+        std::cout << "Quit Game." << std::endl;
         this->game_in_progress = false;
     }
 

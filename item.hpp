@@ -1,3 +1,11 @@
+/*
+ * Team Members:
+ * Drew Baine
+ * Gab Borja
+ * Hunter McGraw
+ * 3/2/25
+ */
+
 #ifndef ITEM_HPP
 #define ITEM_HPP
 

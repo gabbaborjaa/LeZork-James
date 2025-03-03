@@ -109,57 +109,88 @@ class Game {
 
         court.add_npc(lebron);
         court.add_item(basketball);
-        court.add_location("East", lockers);
-        court.add_location("South", kingSuite);
 
         kingSuite.add_npc(davis);
-        kingSuite.add_item(playbook);
-        kingSuite.add_location("East", lebronHouse);
-        kingSuite.add_location("South", philanthropyCenter);
-        kingSuite.add_location("North", court);
+        kingSuite.add_item(playbook);  
 
         philanthropyCenter.add_item(mvpStatue);
-        philanthropyCenter.add_location("East", spaceJamStudio);
-        philanthropyCenter.add_location("North", kingSuite);
 
         lockers.add_npc(kyrie);
         lockers.add_item(proteinShake);
-        lockers.add_location("East", akronHometown);
-        lockers.add_location("South", lebronHouse);
-        lockers.add_location("West", court);
 
         lebronHouse.add_npc(bronny);
         lebronHouse.add_item(jersey);
         lebronHouse.add_item(sneakers);
+
+        spaceJamStudio.add_item(headband);
+
+        akronHometown.add_item(actionFigure);
+        akronHometown.add_item(rookieCard);
+
+        championshipRoom.add_npc(wade);
+        championshipRoom.add_item(championshipRing);
+
+        locations.push_back(court);//0
+        locations.push_back(kingSuite);//01
+        locations.push_back(philanthropyCenter);//02
+        locations.push_back(lockers);//03
+        locations.push_back(lebronHouse);//04
+        locations.push_back(spaceJamStudio);//05
+        locations.push_back(akronHometown);//06
+        locations.push_back(championshipRoom);//07
+
+        locations[0].add_location("East",locations[3]);
+        locations[0].add_location("South",locations[1]);
+
+        court.add_location("East", lockers);
+        court.add_location("South", kingSuite);
+
+        locations[1].add_location("East",locations[4]);
+        locations[1].add_location("South",locations[2]);
+        locations[1].add_location("North",locations[0]);
+        kingSuite.add_location("East", lebronHouse);
+        kingSuite.add_location("South", philanthropyCenter);
+        kingSuite.add_location("North", court);
+
+        locations[2].add_location("East",locations[5]);
+        locations[2].add_location("North",locations[1]);
+        philanthropyCenter.add_location("East", spaceJamStudio);
+        philanthropyCenter.add_location("North", kingSuite);
+
+        locations[3].add_location("East",locations[6]);
+        locations[3].add_location("South",locations[4]);
+        locations[3].add_location("West",locations[0]);
+        lockers.add_location("East", akronHometown);
+        lockers.add_location("South", lebronHouse);
+        lockers.add_location("West", court);
+
+        locations[4].add_location("North",locations[3]);
+        locations[4].add_location("East",locations[7]);
+        locations[4].add_location("South",locations[5]);
+        locations[4].add_location("West",locations[1]);
         lebronHouse.add_location("North", lockers);
         lebronHouse.add_location("East", championshipRoom);
         lebronHouse.add_location("South", spaceJamStudio);
         lebronHouse.add_location("West", kingSuite);
 
-        spaceJamStudio.add_item(headband);
+        locations[5].add_location("North",locations[4]);
+        locations[5].add_location("West",locations[2]);
         spaceJamStudio.add_location("North", lebronHouse);
         spaceJamStudio.add_location("West", philanthropyCenter);
 
-        akronHometown.add_item(actionFigure);
-        akronHometown.add_item(rookieCard);
+        locations[6].add_location("South",locations[7]);
+        locations[6].add_location("West",locations[3]);
         akronHometown.add_location("South", championshipRoom);
         akronHometown.add_location("West", lockers);
 
-        championshipRoom.add_npc(wade);
-        championshipRoom.add_item(championshipRing);
+        locations[7].add_location("South",locations[4]);
+        locations[7].add_location("West",locations[6]);
         championshipRoom.add_location("West", lebronHouse);
         championshipRoom.add_location("North", akronHometown);
 
-        locations.push_back(court);
-        locations.push_back(kingSuite);
-        locations.push_back(philanthropyCenter);
-        locations.push_back(lockers);
-        locations.push_back(lebronHouse);
-        locations.push_back(spaceJamStudio);
-        locations.push_back(akronHometown);
-        locations.push_back(championshipRoom);
+        
     }
-/*
+
     std::map<std::string, void(Game::*)(std::vector<std::string>)> setup_commands() {
         std::map<std::string, void(Game::*)(std::vector<std::string>)> commands;
         commands["quit"] = &Game::quit;
@@ -175,7 +206,7 @@ class Game {
         commands["speak"] = &Game::talk;
         commands["interact"] = &Game::meet;
         return commands;
-    }*/
+    }
 
     Location random_location(){
         if (locations.empty()) {

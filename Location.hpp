@@ -50,7 +50,7 @@ class Location{
                     std::forward_as_tuple(std::ref(location)));
         }
         const std::map<std::string, std::reference_wrapper<Location> >& get_locations() const {
-        return this->neighbors; 
+            return this->neighbors;
         }
         void set_visited(){
             this->visited = true;
@@ -68,6 +68,11 @@ class Location{
         void add_item(Item& item){
             this->items.push_back(item);
         }
+
+        void remove_item(Item& item){
+            this->items.erase(std::remove(this->items.begin(), this->items.end(), item));
+        }
+
         std::vector<Item>& get_items(){
             return this->items;
         }
@@ -75,6 +80,11 @@ class Location{
         std::vector<NPC>& get_NPCs(){
             return this->NPCs;
         }
+
+        std::string get_name(){
+            return this->name;
+        }
+
  };
 
  #endif

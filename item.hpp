@@ -35,6 +35,23 @@ class Item {
             os << item.name << " (" << item.calories << " calories) - " << item.weight << " lb - " << item.description;
             return os;
         }
+
+        bool operator==(const Item& item) const {
+            return name == item.name;
+        }
+
+        std::string getName(){
+            return name;
+        }
+
+        float getWeight(){
+            return weight;
+        }
+
+        int getCalories(){
+            return calories;
+        }
+
     private:
         std::string name;
         std::string description;

@@ -403,6 +403,12 @@ class Game {
 
         std::string direction = target[0];
 
+        for (auto it = locations.begin(); it != locations.end(); ++it) {
+            if (it->get_name() == curr_location.get_name()) {
+                it->set_visited();
+            }
+        }
+
         if (weight > 30) {
             std::cout << "Too heavy! Can't move." << std::endl;
             return;
@@ -412,7 +418,6 @@ class Game {
         auto it = neighbors.find(direction);
         if (it != neighbors.end()) {
             curr_location = it->second.get();
-            it->second.get().set_visited();
             std::cout << "You moved to: " << curr_location.get_name() << std::endl;
         } else {
             std::cout << "You can't go that way." << std::endl;

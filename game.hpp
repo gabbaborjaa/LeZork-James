@@ -356,7 +356,6 @@ class Game {
     }
 
     void give(std::vector<std::string> target) {
-
         auto iter = std::find_if(items.begin(), items.end(), [target](Item& item) {
             return item.getName() == target[0];
         });
@@ -366,26 +365,29 @@ class Game {
             std::string item_name = items[i].getName();
             std::cout << "Gave " << item_name << "!" << std::endl;
 
-            curr_location.add_item(items[i]);
-            for (auto it = locations.begin(); it != locations.end(); ++it) {
-                if (it->get_name() == curr_location.get_name()) {
-                    it->add_item(items[i]);
+            if (curr_location.get_name() == "Basketball Court") {
+                if (items[i].getCalories() > 0) {
+                    calories_needed -= items[i].getCalories();
+                    if (calories_needed <= 0) {
+                        calories_needed = 0;
+                        game_in_progress = false;
+                    }
+                    std::cout << "LeBron James needs: " << calories_needed << " more calorie(s)!" << std::endl;
+                } else {
+                    curr_location = random_location();
+                    std::cout << "You upset LeBron by giving him something with 0 calories." << std::endl;
+                    std::cout << "LeBron summoned a spell to teleport you." << std::endl;
+                    std::cout << "You are now in a different location." << std::endl;
+                }
+            } else {
+                curr_location.add_item(items[i]);
+                for (auto it = locations.begin(); it != locations.end(); ++it) {
+                    if (it->get_name() == curr_location.get_name()) {
+                        it->add_item(items[i]);
+                    }
                 }
             }
             weight -= items[i].getWeight();
-
-            if (curr_location.get_name() == "Basketball Court") {
-                if (items[i].getCalories()) {
-                    calories_needed -= items[i].getCalories();
-                } else {
-                    curr_location = random_location();
-                }
-                if (calories_needed <= 0) {
-                    calories_needed = 0;
-                    game_in_progress = false;
-                }
-                std::cout << "LeBron James needs: " << calories_needed << " more calorie(s)!" << std::endl;
-            }
             items.erase(std::remove(this->items.begin(), this->items.end(), items[i]));
 
         } else {

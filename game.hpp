@@ -204,6 +204,7 @@ class Game {
         commands["go"] = &Game::go;
         commands["speak"] = &Game::talk;
         commands["interact"] = &Game::meet;
+        commands["dream"] = &Game::dream;
         return commands;
     }
 
@@ -384,10 +385,20 @@ class Game {
         const auto& neighbors = curr_location.get_locations();
         auto it = neighbors.find(direction);
         if (it != neighbors.end()) {
-            curr_location = it->second.get();
+        //     curr_location = it->second.get();
+        //     std::cout << "You moved to: " << curr_location.get_name() << std::endl;
+        // } else {
+            // std::cout << "You can't go that way." << std::endl;
+            Location& newLocation = it->second.get();
+            if (newLocation.get_visited()) {
+                newLocation.reset_items();
+            }
+
+            curr_location = newLocation;
             std::cout << "You moved to: " << curr_location.get_name() << std::endl;
-        } else {
-            std::cout << "You can't go that way." << std::endl;
+            } else {
+                std::cout << "You can't go that way." << std::endl;
+    }
         }
         
         //     std::map<std::string, std::reference_wrapper<Location>> neighbors = curr_location.get_locations();
@@ -399,7 +410,7 @@ class Game {
         //         }
         //     }
         // }
-    }
+    
 
     void show_items(std::vector<std::string> target) {
         std::cout << "Your items" << std::endl;
@@ -438,7 +449,9 @@ class Game {
     }
 
     // Add two additional commands here
-
+    void dream(std::vector<std::string> target){
+        std::cout << "Remember. Enter Mamba Mentality - Kobe Bryant" << std::endl;
+    }
 };
 
 #endif //GAME_HPP

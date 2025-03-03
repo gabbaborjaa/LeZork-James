@@ -299,9 +299,9 @@ class Game {
         std::cout << "go -> goes to a neighboring location." << std::endl;
         std::cout << "take -> takes item from current location." << std::endl;
         std::cout << "give -> puts item in current location or gives to LeBron if in the court." << std::endl;
-
+        std::cout << "hoop -> challenge LeBron to a basketball game and raise the stakes." << std::endl;
+        std::cout << "dream -> receive an inspirational quote from Kobe and a special item." << std::endl;
     }
-
     void talk(std::vector<std::string> target) {
             std::vector<NPC>& npcs = curr_location.get_NPCs();
 

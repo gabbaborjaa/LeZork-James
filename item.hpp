@@ -48,11 +48,11 @@ class Item {
             return name == item.name;
         }
 
-        std::string getName(){
+        std::string getName() const {
             return name;
         }
 
-        float getWeight(){
+        float getWeight() const {
             return weight;
         }
 

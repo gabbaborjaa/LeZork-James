@@ -471,8 +471,22 @@ class Game {
     }
 
     // Add two additional commands here
+
+    // Function gives inspirational words to the user
     void dream(std::vector<std::string> target){
-        std::cout << "Remember. Enter Mamba Mentality - Kobe Bryant" << std::endl;
+        std::cout << "Dedication makes dreams come true - Kobe Bryant" << std::endl;
+
+        auto iter = std::find_if(items.begin(), items.end(), [](const Item& item) {
+            return item.getName() == "Mamba Mentality";
+        });
+    
+        if (iter == items.end()) {
+            // If the item is not found, add it to the inventory
+            Item mambaMentality("Mamba Mentality", "A special item that embodies the relentless pursuit of excellence.", 0, 0.1f);
+            items.push_back(mambaMentality);
+            weight += mambaMentality.getWeight();
+            std::cout << "You have received a special item: " << mambaMentality.getName() << std::endl;
+        }
     }
 };
 

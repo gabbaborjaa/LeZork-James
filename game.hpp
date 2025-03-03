@@ -15,8 +15,10 @@
 #include <map>
 #include <random>
 #include <sstream>
-#include <numeric>
 #include <algorithm>
+#include <ctime>
+#include <chrono>
+#include <iomanip>
 #include "Location.hpp"
 #include "item.hpp"
 #include "npc.hpp"
@@ -41,7 +43,6 @@ class Game {
             this->curr_location = random_location();
         }
 
-    
     void create_world() {
 
         // AI generated items, NPCs, NPC messages, and locations
@@ -229,6 +230,12 @@ class Game {
     }
 
     void show_help(std::vector<std::string> target) {
+        // Date and time helped by Copilot
+        auto now = std::chrono::system_clock::now();
+        std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+        std::tm* now_tm = localtime(&now_c);
+        std::cout << "Date and Time: " << std::put_time(now_tm, "%m-%d-%Y - %H:%M:%S") << '\n' << std::endl;
+
         std::cout << "Available Commands:" << std::endl;
         std::cout << "(show) help -> lists all commands." << std::endl;
         std::cout << "quit -> quits the program." << std::endl;
@@ -314,6 +321,8 @@ class Game {
             if (curr_location.get_name() == "Basketball Court") {
                 if (items[i].getCalories()) {
                     calories_needed -= items[i].getCalories();
+                } else {
+                    curr_location = random_location();
                 }
                 if (calories_needed <= 0) {
                     calories_needed = 0;
@@ -327,7 +336,6 @@ class Game {
             std::cout << "Item not in inventory!" << std::endl;
         }
     }
-
 
     void go(std::vector<std::string> target) {
         curr_location.set_visited();

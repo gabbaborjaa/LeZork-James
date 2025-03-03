@@ -141,7 +141,6 @@ class Game {
 
         locations[0].add_location("East",locations[3]);
         locations[0].add_location("South",locations[1]);
-
         court.add_location("East", lockers);
         court.add_location("South", kingSuite);
 
@@ -183,8 +182,8 @@ class Game {
         akronHometown.add_location("South", championshipRoom);
         akronHometown.add_location("West", lockers);
 
-        locations[7].add_location("South",locations[4]);
-        locations[7].add_location("West",locations[6]);
+        locations[7].add_location("West",locations[4]);
+        locations[7].add_location("North",locations[6]);
         championshipRoom.add_location("West", lebronHouse);
         championshipRoom.add_location("North", akronHometown);
 
@@ -424,10 +423,10 @@ class Game {
         std::map<std::string, std::reference_wrapper<Location>> neighbors = curr_location.get_locations();
 
 
-        /*for (const auto& [key, ref] : neighbors) { // ChatGPT
+        for (const auto& [key, ref] : neighbors) { // ChatGPT
             Location& loc = ref.get();
             std::cout << "Key: " << key << ", Location: " << loc << std::endl;
-        }*/
+        }
         /*for(auto it = neighbors.begin(); it != neighbors.end(); ++it){
             std::cout << *it << std::endl;
         }*/

@@ -25,8 +25,6 @@ class Game {
 
     public:
         Game() {
-            // I don't think we initialize items or locations here.
-            // I think we initialize them in create_world
             this->commands = setup_commands();
             create_world();
             this->weight = 0;
@@ -74,16 +72,16 @@ class Game {
             "Have you ever thought about the shape of the Earth?"
         };
 
-        Item basketball("Basketball", "Lebron's favorite ball", 40, 2.f);
-        Item proteinShake("Protein Shake", "A delicious chocolate bar", 250, 0.2f);
-        Item championshipRing("Championship Ring", "A shimmering ring symbolizing one of LeBron's NBA titles. It glows with a legendary aura.", 0, 0.1);
-        Item sneakers("Nike LeBron Sneakers", "A pair of iconic Nike LeBron 20s. Wearing them might help you move faster on and off the court.", 0, 0.5f);
-        Item jersey("Official Jersey", "An official Los Angeles Lakers #23 jersey.", 0, 0.3f);
-        Item rookieCard("Rookie Card", "A rare 2003 rookie card, highly valuable among collectors.", 0, 0.02f);
-        Item headband("Basketball Headband", "A white headband, reminiscent of an early career look.", 0, 0.1f);
-        Item playbook("Basketball Playbook", "A notebook filled with high-IQ basketball strategies.", 0, 0.8f);
-        Item actionFigure("Basketball Action Figure", "A detailed collectible figure in a dunking pose.", 0, 0.5f);
-        Item mvpStatue("MVP Trophy", "A miniature replica of the NBA MVP trophy.", 0, 1.0f);
+        Item basketball("Basketball", "Lebron's favorite ball", 40, 4);
+        Item proteinShake("Protein Shake", "A delicious chocolate bar", 150, 7);
+        Item championshipRing("Championship Ring", "A shimmering ring symbolizing one of LeBron's NBA titles. It glows with a legendary aura.", 225, 2);
+        Item sneakers("Nike LeBron Sneakers", "A pair of iconic Nike LeBron 20s. Wearing them might help you move faster on and off the court.", 70, 14);
+        Item jersey("Official Jersey", "An official Los Angeles Lakers #23 jersey.", 0, 12);
+        Item rookieCard("Rookie Card", "A rare 2003 rookie card, highly valuable among collectors.", 0, 3.1);
+        Item headband("Basketball Headband", "A white headband, reminiscent of an early career look.", 0, 6);
+        Item playbook("Basketball Playbook", "A notebook filled with high-IQ basketball strategies.", 90, 11.5);
+        Item actionFigure("Basketball Action Figure", "A detailed collectible figure in a dunking pose.", 110, 8);
+        Item mvpStatue("MVP Trophy", "A miniature replica of the NBA MVP trophy.", 200, 30);
 
         NPC lebron("LeBron James", "A legendary basketball player", lebronMessages);
         NPC bronny("Bronny James", "A young and talented basketball player following in his father's footsteps.", bronnyMessages);
@@ -165,6 +163,7 @@ class Game {
         commands["talk"] = &Game::talk;
         commands["take"] = &Game::take;
         commands["give"] = &Game::give;
+        commands["go"] = &Game::go;
 
         /*commands["speak to"] = &Game::meet;
         commands["interact with"] = &Game::meet;*/
@@ -209,7 +208,11 @@ class Game {
                 (this->*func)({target});
             }
         }
-
+        if (calories_needed) {
+            std::cout << 'You lose!';
+        } else {
+            std::cout << 'You win!';
+        }
     }
 
     void show_help(std::vector<std::string> target) {
@@ -298,23 +301,35 @@ class Game {
                 if (items[i].getCalories()) {
                     calories_needed -= items[i].getCalories();
                 }
+                if (calories_needed <= 0) {
+                    calories_needed = 0;
+                    game_in_progress = false;
+                }
                 std::cout << "LeBron James needs: " << calories_needed << " more calorie(s)!" << std::endl;
             }
-
             items.erase(std::remove(this->items.begin(), this->items.end(), items[i]));
 
         } else {
             std::cout << "Item not in inventory!" << std::endl;
         }
-
-        // now feed the elf or whatever
-
     }
 
 
     void go(std::vector<std::string> target) {
-
+        curr_location.set_visited();
+        if (weight > 30) {
+            std::cout << "Too heavy! Can't move." << std::endl;
+        } else {
+            std::map<std::string, std::reference_wrapper<Location>> neighbors = curr_location.get_locations();
+            for (const auto& [key, ref] : neighbors) { // ChatGPT
+                Location& loc = ref.get();
+                if (key == target[0]) {
+                    curr_location = loc;
+                    break;
+                }
+            }
         }
+    }
 
     void show_items(std::vector<std::string> target) {
         std::cout << "Your items" << std::endl;

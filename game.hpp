@@ -412,9 +412,8 @@ class Game {
             curr_location = it->second.get();
             it->second.get().set_visited();
             std::cout << "You moved to: " << curr_location.get_name() << std::endl;
-            } else {
-                std::cout << "You can't go that way." << std::endl;
-    }
+        } else {
+            std::cout << "You can't go that way." << std::endl;
         }
     }
 

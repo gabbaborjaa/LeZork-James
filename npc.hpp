@@ -1,3 +1,11 @@
+/*
+ * Team Members:
+ * Drew Baine
+ * Gab Borja
+ * Hunter McGraw
+ * 3/2/25
+ */
+
 #ifndef NPC_HPP
 #define NPC_HPP
 
@@ -46,6 +54,7 @@ class NPC {
             os << npc.name;
             return os;
         }
+
     private:
         std::string name;
         std::string description;

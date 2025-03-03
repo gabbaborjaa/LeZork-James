@@ -38,8 +38,10 @@ int main(int argc, char** argv) {
     std::cout << lebron.getMessage() << std::endl;
     std::cout << lebron.getMessage() << std::endl; // This should loop back to the first message
 
-    Game game;
-
     std::cout << lebron.getMessage() << std::endl;
+
+    Game game;
+    game.play();
+
     return 0;
 }

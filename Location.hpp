@@ -1,3 +1,11 @@
+/*
+ * Team Members:
+ * Drew Baine
+ * Gab Borja
+ * Hunter McGraw
+ * 3/2/25
+ */
+
 #ifndef __HPP__LOCATION__
 #define __HPP__LOCATION__
 
@@ -16,7 +24,7 @@ class Location{
         std::string name;
         std::string description;
         bool visited = false;
-        std::map<std::string, std::reference_wrapper<Location>> neighbors; 
+        std::map<std::string, std::reference_wrapper<Location> > neighbors; 
         std::vector<NPC> NPCs;
         std::vector<Item> items;
 
@@ -30,9 +38,8 @@ class Location{
             this->description = description;
         }
 
-
         friend std::ostream& operator<<(std::ostream& os, const Location& obj){
-            os << obj.name <<"\n\t" << obj.description;
+            os << obj.name << " - " << obj.description;
             return os;
         }
         // void add_location(std::string direction, std::reference_wrapper<Location> location) {
@@ -50,8 +57,8 @@ class Location{
                     std::forward_as_tuple(direction),
                     std::forward_as_tuple(std::ref(location)));
         }
-        const std::map<std::string, std::reference_wrapper<Location>>& get_locations() const {
-        return this->neighbors; 
+        const std::map<std::string, std::reference_wrapper<Location> >& get_locations() const {
+            return this->neighbors;
         }
         void set_visited(){
             this->visited = true;
@@ -69,6 +76,11 @@ class Location{
         void add_item(Item& item){
             this->items.push_back(item);
         }
+
+        void remove_item(Item& item){
+            this->items.erase(std::remove(this->items.begin(), this->items.end(), item));
+        }
+
         std::vector<Item>& get_items(){
             return this->items;
         }
@@ -76,6 +88,11 @@ class Location{
         std::vector<NPC>& get_NPCs(){
             return this->NPCs;
         }
+
+        std::string get_name(){
+            return this->name;
+        }
+
  };
 
  #endif

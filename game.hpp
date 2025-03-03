@@ -338,19 +338,37 @@ class Game {
     }
 
     void go(std::vector<std::string> target) {
+        if (target.empty()) {
+             std::cout << "Specify a direction to go." << std::endl;
+            return;
+        }
+
+        std::string direction = target[0];
         curr_location.set_visited();
+
         if (weight > 30) {
             std::cout << "Too heavy! Can't move." << std::endl;
-        } else {
-            std::map<std::string, std::reference_wrapper<Location>> neighbors = curr_location.get_locations();
-            for (const auto& [key, ref] : neighbors) { // ChatGPT
-                Location& loc = ref.get();
-                if (key == target[0]) {
-                    curr_location = loc;
-                    break;
-                }
-            }
+            return;
         }
+        
+        const auto& neighbors = curr_location.get_locations();
+        auto it = neighbors.find(direction);
+        if (it != neighbors.end()) {
+            curr_location = it->second.get();
+            std::cout << "You moved to: " << curr_location.get_name() << std::endl;
+        } else {
+            std::cout << "You can't go that way." << std::endl;
+        }
+        
+        //     std::map<std::string, std::reference_wrapper<Location>> neighbors = curr_location.get_locations();
+        //     for (const auto& [key, ref] : neighbors) { // ChatGPT
+        //         Location& loc = ref.get();
+        //         if (key == target[0]) {
+        //             curr_location = loc;
+        //             break;
+        //         }
+        //     }
+        // }
     }
 
     void show_items(std::vector<std::string> target) {

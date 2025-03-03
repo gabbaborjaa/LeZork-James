@@ -219,6 +219,7 @@ class Game {
         commands["go"] = &Game::go;
         commands["speak"] = &Game::talk;
         commands["interact"] = &Game::meet;
+        commands["dream"] = &Game::dream;
         return commands;
     }
 
@@ -411,8 +412,9 @@ class Game {
             curr_location = it->second.get();
             it->second.get().set_visited();
             std::cout << "You moved to: " << curr_location.get_name() << std::endl;
-        } else {
-            std::cout << "You can't go that way." << std::endl;
+            } else {
+                std::cout << "You can't go that way." << std::endl;
+    }
         }
     }
 
@@ -463,7 +465,9 @@ class Game {
     }
 
     // Add two additional commands here
-
+    void dream(std::vector<std::string> target){
+        std::cout << "Remember. Enter Mamba Mentality - Kobe Bryant" << std::endl;
+    }
 };
 
 #endif //GAME_HPP

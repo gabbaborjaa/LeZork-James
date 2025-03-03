@@ -156,7 +156,6 @@ class Game {
         commands["quit"] = &Game::quit;
         commands["q"] = &Game::quit;
         commands["help"] = &Game::show_help;
-        commands["show help"] = &Game::show_help;
         commands["items"] = &Game::show_items;
         commands["look"] = &Game::look;
         commands["meet"] = &Game::meet;
@@ -164,9 +163,8 @@ class Game {
         commands["take"] = &Game::take;
         commands["give"] = &Game::give;
         commands["go"] = &Game::go;
-
-        /*commands["speak to"] = &Game::meet;
-        commands["interact with"] = &Game::meet;*/
+        commands["speak"] = &Game::talk;
+        commands["interact"] = &Game::meet;
         return commands;
     }
 
@@ -192,8 +190,15 @@ class Game {
             while (iss >> word) {
                 tokens.push_back(word);
             }
+            if (tokens[0] == "show") {
+                tokens.erase(tokens.begin());
+            }
             command = tokens[0];
             tokens.erase(tokens.begin());
+
+            if (tokens[0] == "to" or tokens[0] == "with" or tokens[0] == "the") {
+                tokens.erase(tokens.begin());
+            }
 
             std::ostringstream oss;
             for (int i = 0; i < tokens.size(); ++i) {
@@ -209,14 +214,24 @@ class Game {
             }
         }
         if (calories_needed) {
-            std::cout << 'You lose!';
+            std::cout << "You lose!" << std::endl;
         } else {
-            std::cout << 'You win!';
+            std::cout << "You win!" << std::endl;
         }
     }
 
     void show_help(std::vector<std::string> target) {
         std::cout << "Available Commands:" << std::endl;
+        std::cout << "(show) help -> lists all commands." << std::endl;
+        std::cout << "quit -> quits the program." << std::endl;
+        std::cout << "(show) items -> lists items in inventory." << std::endl;
+        std::cout << "meet -> gives name and description of NPC." << std::endl;
+        std::cout << "talk (to) -> gets a message from the NPC." << std::endl;
+        std::cout << "look -> looks in the current location and what's in it." << std::endl;
+        std::cout << "go -> goes to a neighboring location." << std::endl;
+        std::cout << "take -> takes item from current location." << std::endl;
+        std::cout << "give -> puts item in current location or gives to LeBron if in the court." << std::endl;
+
     }
 
     void talk(std::vector<std::string> target) {
@@ -354,7 +369,7 @@ class Game {
     }
 
     void quit(std::vector<std::string> target) {
-        std::cout << "Game Quit" << std::endl;
+        std::cout << "Quit Game." << std::endl;
         this->game_in_progress = false;
     }
 

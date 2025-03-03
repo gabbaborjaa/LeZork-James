@@ -33,14 +33,17 @@ class NPC {
                 this->messages = messages;
             }
         }
+        // Returns name of NPC
         std::string getName(){
             return name;
         }
 
+        // Returns description of NPC
         std::string getDescription(){
             return description;
         }
 
+        // Returns Text lines of NPC
         std::string getMessage(){
             if (messages.empty()) {
                 throw std::runtime_error("No messages available");
@@ -50,6 +53,7 @@ class NPC {
             return currentMessage;
         }
 
+        // Allows name of NPC to be readable by game header.
         friend std::ostream& operator<<(std::ostream& os, const NPC& npc){
             os << npc.name;
             return os;

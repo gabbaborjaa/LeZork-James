@@ -343,6 +343,7 @@ class Game {
             items.push_back(item_vector[i]);
             weight += item_vector[i].getWeight();
             std::cout << "Took " << item_name << "!" << std::endl;
+            curr_location.remove_item(item_vector[i]);
             for (auto it = locations.begin(); it != locations.end(); ++it) {
                 if (it->get_name() == curr_location.get_name()) {
                     std::cout << "Done!" << std::endl;
@@ -437,7 +438,7 @@ class Game {
                 std::cout << " - "<< *it << std::endl;
             }
         } else {
-            std::cout << "\nThere are no items." << std::endl;
+            std::cout << "There are no items." << std::endl;
         }
 
         std::map<std::string, std::reference_wrapper<Location>> neighbors = curr_location.get_locations();

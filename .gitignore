@@ -6,3 +6,6 @@ a.out
 
 # Ignore object files
 *.o
+
+# Ignore test file
+test.cpp

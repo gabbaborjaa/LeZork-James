@@ -31,7 +31,7 @@ class Location{
         }
 
         friend std::ostream& operator<<(std::ostream& os, const Location& obj){
-            os << obj.name <<"\n\t" << obj.description;
+            os << obj.name << " - " << obj.description;
             return os;
         }
         // void add_location(std::string direction, std::reference_wrapper<Location> location) {

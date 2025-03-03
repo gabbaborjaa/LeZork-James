@@ -367,6 +367,12 @@ class Game {
             std::cout << "Gave " << item_name << "!" << std::endl;
 
             curr_location.add_item(items[i]);
+            for (auto it = locations.begin(); it != locations.end(); ++it) {
+                if (it->get_name() == curr_location.get_name()) {
+                    std::cout << "Done!" << std::endl;
+                    it->add_item(items[i]);
+                }
+            }
             weight -= items[i].getWeight();
 
             if (curr_location.get_name() == "Basketball Court") {

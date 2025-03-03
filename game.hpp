@@ -32,6 +32,12 @@ class Game {
         Location curr_location;
         int calories_needed;
         bool game_in_progress;
+        std::vector<std::string> kobeMessages = {
+            "Dedication makes dreams come true - Kobe",
+            "Once you know what failure feels like, determination chases success - Kobe",
+            "The most important thing is to try and inspire people so that they can be great in whatever they want to do - Kobe"
+        };
+        int kobeMessagesIndex = 0;
 
     public:
         Game() {
@@ -474,8 +480,10 @@ class Game {
 
     // Function gives inspirational words to the user
     void dream(std::vector<std::string> target){
-        std::cout << "Dedication makes dreams come true - Kobe Bryant" << std::endl;
+        std::cout << kobeMessages[kobeMessagesIndex] << std::endl;
 
+        kobeMessagesIndex = (kobeMessagesIndex + 1) % kobeMessages.size();
+        
         auto iter = std::find_if(items.begin(), items.end(), [](const Item& item) {
             return item.getName() == "Mamba Mentality";
         });

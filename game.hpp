@@ -12,7 +12,7 @@
 
 class Game {
     private:
-        std::map<std::string, void(Game::*)(std::vector<std::string>)> commands;
+        std::map<std::string, void(Game::*)(std::vector<std::string>) > commands;
         std::vector<Item> items;
         int weight;
         std::vector<Location> locations;
@@ -73,6 +73,7 @@ class Game {
         commands["talk to"] = &Game::meet;
         commands["speak to"] = &Game::meet;
         commands["interact with"] = &Game::meet;
+        commands["show items"] = &Game::show_help;
         return commands;
     }
 
@@ -97,19 +98,74 @@ class Game {
 
     void show_help(std::vector<std::string> target) {
         std::cout << "Available Commands:" << std::endl;
+        std::cout << "quit, q - Quit the game" << std::endl;
+        std::cout << "help - Show this help message" << std::endl;
+        std::cout << "talk to, speak to, interact with - Interact with an NPC" << std::endl;
+        std::cout << "give [item] -- Removes item from inventory and places it in Location's inventory" << std::endl;
+        std::cout << "take" << std::endl;
+        std::cout << "go" << std::endl;
+        std::cout << "show_items" << std::endl;
+        std::cout << "look" << std::endl;
+
     }
 
     // Speaks to NPC
     void meet(std::vector<std::string> target);
 
-    void take(std::vector<std::string> target);
+    void take(std::vector<std::string> target){
+        if (target.empty()) {
+            std::cout << "What item do you want to take>" << std::endl;
+            return;
+        }
+
+        std::string itemName = target[0];
+        bool itemFound = false;
+
+        for (auto it = curr_location.get_items().begin(); it != curr_location.get_items().end(); ++it){
+            if(it->itemName == itemName) {
+                items.push_back(*it);
+                weight += it->getWeight();
+                curr_location.get_items().erase(it);
+                itemFound = true;
+                std::cout << "You picked up " << itemName << "." << std::endl;
+                break;
+            }
+        }
+
+        if (!itemFound) {
+            std::cout << "Item is not here." << std::endl;
+        }
+    }
 
     void give(std::vector<std::string> target);
 
-    void go(std::vector<std::string> target);
+    void go(std::vector<std::string> target){
+        if (target.empty()) {
+            std::cout << "You can't go there" << std::endl;
+            return;
+        }
 
-    void show_items(std::vector<std::string> target);
+        std::string direction = target[0];
+        curr_location.set_visited();
 
+        if (weight > 30){
+            std::cout << "You are carrying too much stuff that you can't move." << std::endl;
+            return;
+        }
+
+        // if (curr_location.has_neighbor(direction)) {
+        //     curr_location = curr_location.get_neighbor(direction);
+        //     std::cout << "You moved to: " << curr_location.getName() << std::endl;
+        // }
+    }
+    void show_items(std::vector<std::string> target){      
+        std::cout << "Your items" << std::endl;
+        for (auto it = items.begin(); it != items.end(); ++it) {
+            std::cout << *it << std::endl;
+        }
+        std::cout << "Your weight: " << weight << " lbs" << std::endl;
+    }
+       
     void look(std::vector<std::string> target);
 
     void quit(std::vector<std::string> target) {

@@ -9,7 +9,7 @@ Description: This is a Lebron James-Themed Zork game built in C++.
 
 - run `g++ main.cpp`
 
-- run the executable (./a.out)
+- run the executable `./a.out`
 
 - enjoy Lebron James levels of fun
 
